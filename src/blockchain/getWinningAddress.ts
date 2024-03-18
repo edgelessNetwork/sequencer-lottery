@@ -1,3 +1,4 @@
+import { BlacklistedAddresses } from "../constants";
 import { getPublicClient } from "./clients";
 
 /**
@@ -5,7 +6,11 @@ import { getPublicClient } from "./clients";
  * @param {number} fromBlock
  * @param {number} toBlock
  */
-export const getWinningAddress = async (chainId, fromBlock, toBlock) => {
+export const getWinningAddress = async (
+  chainId: number,
+  fromBlock: number,
+  toBlock: number
+) => {
   const publicClient = await getPublicClient(chainId);
   const randomBlock = BigInt(
     Math.floor(Math.random() * (toBlock - fromBlock) + fromBlock)
@@ -17,5 +22,9 @@ export const getWinningAddress = async (chainId, fromBlock, toBlock) => {
   const transaction = await publicClient.getTransaction({
     hash: randomTransactionHash,
   });
-  return transaction.from;
+  if (BlacklistedAddresses.has(transaction.from)) {
+    return getWinningAddress(chainId, fromBlock, toBlock);
+  } else {
+    return transaction.from;
+  }
 };

@@ -38,3 +38,6 @@ if (!process.env.TIME_INTERVAL) {
   throw new Error("TIME_INTERVAL environment variable not set");
 }
 export const timeInterval = process.env.TIME_INTERVAL;
+export const BlacklistedAddresses = new Set([
+  "0x00000000000000000000000000000000000a4b05",
+]);

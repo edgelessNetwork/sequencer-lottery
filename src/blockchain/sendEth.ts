@@ -1,4 +1,4 @@
-import { Address, createWalletClient, http } from "viem";
+import { Address, createWalletClient, formatEther, http } from "viem";
 import { FUNDER_PRIVATE_KEY } from "../constants";
 import { privateKeyToAccount } from "viem/accounts";
 import { getPublicClient } from "./clients";
@@ -19,14 +19,24 @@ export const sendEth = async (sendEth: SendEthParams) => {
     chain: publicClient.chain,
     transport: http(),
   });
-  const hash = await walletClient.sendTransaction({
-    account,
-    to: recipient,
-    value: amount,
-  });
+  let hash;
+  try {
+    hash = await walletClient.sendTransaction({
+      account,
+      to: recipient,
+      value: amount,
+    });
+  } catch (e) {
+    console.error(e);
+  }
+
   // Send Eth
   const txReceipt = await publicClient.waitForTransactionReceipt({
     hash: hash,
   });
-  console.log("txReceipt", txReceipt);
+  console.log(
+    `Sent ${recipient} ${formatEther(amount)} Eth via ${
+      txReceipt.transactionHash
+    }`
+  );
 };

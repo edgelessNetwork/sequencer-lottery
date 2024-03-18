@@ -17,7 +17,7 @@ export const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 const spinLottery = async () => {
   const fromBlock = 0;
   const publicClient = await getPublicClient(CHAIN_ID);
-  const toBlock = (await publicClient.getBlock()).number;
+  const toBlock = Number((await publicClient.getBlock()).number);
   const winningAddress = await getWinningAddress(CHAIN_ID, fromBlock, toBlock);
   await sendEth({
     chainId: CHAIN_ID,
